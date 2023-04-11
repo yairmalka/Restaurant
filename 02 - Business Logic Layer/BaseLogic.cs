@@ -14,5 +14,13 @@ namespace Restaurant
         {
             db.Dispose();
         }
+
+
+        public void Test()
+        {
+
+        }
     }
+
+    
 }
