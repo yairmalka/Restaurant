@@ -19,11 +19,11 @@ public partial class RestaurantContext : DbContext
 
     public virtual DbSet<Customer> Customers { get; set; }
 
-    public virtual DbSet<Menu> Menus { get; set; }
-
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderItem> OrderItems { get; set; }
+
+    public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
@@ -51,22 +51,6 @@ public partial class RestaurantContext : DbContext
             entity.Property(e => e.CustomerPhoneNumber).HasMaxLength(15);
         });
 
-        modelBuilder.Entity<Menu>(entity =>
-        {
-            entity.HasKey(e => e.MenuItemId);
-
-            entity.ToTable("Menu");
-
-            entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.MenuItemDescription).HasMaxLength(500);
-            entity.Property(e => e.MenuItemName).HasMaxLength(200);
-
-            entity.HasOne(d => d.Category).WithMany(p => p.Menus)
-                .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK_Menu_Categories");
-        });
-
         modelBuilder.Entity<Order>(entity =>
         {
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
@@ -87,19 +71,33 @@ public partial class RestaurantContext : DbContext
         modelBuilder.Entity<OrderItem>(entity =>
         {
             entity.Property(e => e.OrderItemId).HasColumnName("OrderItemID");
-            entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.SpecialRequests).HasMaxLength(1);
-
-            entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderItems)
-                .HasForeignKey(d => d.MenuItemId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderItems_Menu");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderItems_Orders");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderItems)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OrderItems_Products");
+        });
+
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(e => e.ProductId).HasName("PK_Menu");
+
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.ProductDescription).HasMaxLength(500);
+            entity.Property(e => e.ProductName).HasMaxLength(200);
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Products)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("FK_Products_Categories");
         });
 
         modelBuilder.Entity<Review>(entity =>

@@ -28,7 +28,6 @@ namespace Restaurant
                     dataTable.Rows.Add(values[1]);
                 }
 
-                string connectionString = "Server=.\\sqlExpress;DataBase=Restaurant;Trusted_connection=True;Encrypt=False";
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();

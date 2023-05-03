@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace Restaurant
 {
-    public class MenuLogic : BaseLogic
+    public class ProductLogic : BaseLogic
     {
 
-        public void LoadMenuTableFile()
+        public void LoadProductTableFile()
         {
-            string menuProducts = "C:\\Projects\\AngularProjectTest\\RestaurantApplication\\CSV Files\\MenuProducts.csv";
+            string products = "C:\\Projects\\AngularProjectTest\\RestaurantApplication\\CSV Files\\Products.csv";
 
             var dataTable = new DataTable();
             dataTable.Columns.Add("CategoryID");
-            dataTable.Columns.Add("MenuItemName");
-            dataTable.Columns.Add("MenuItemDescription");
-            dataTable.Columns.Add("MenuItemPrice");
+            dataTable.Columns.Add("ProductName");
+            dataTable.Columns.Add("ProductDescription");
+            dataTable.Columns.Add("ProductPrice");
 
-            using (var parser = new TextFieldParser(menuProducts))
+            using (var parser = new TextFieldParser(products))
             {
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
@@ -34,22 +34,21 @@ namespace Restaurant
                 while (!parser.EndOfData)
                 {
                     var values = parser.ReadFields();
-                    string menuItemDescription = values[3].Trim('"');
-                    dataTable.Rows.Add(values[1], values[2], menuItemDescription, values[4]);
+                    string productDescription = values[3].Trim('"');
+                    dataTable.Rows.Add(values[1], values[2], productDescription, values[4]);
                 }
             }
 
-            string connectionString = "Server=.\\sqlExpress;DataBase=Restaurant;Trusted_connection=True;Encrypt=False";
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 using (var bulkCopy = new SqlBulkCopy(connectionString))
                 {
-                    bulkCopy.DestinationTableName = "Menu";
+                    bulkCopy.DestinationTableName = "Products";
                     bulkCopy.ColumnMappings.Add("CategoryID", "CategoryID");
-                    bulkCopy.ColumnMappings.Add("MenuItemName", "MenuItemName");
-                    bulkCopy.ColumnMappings.Add("MenuItemDescription", "MenuItemDescription");
-                    bulkCopy.ColumnMappings.Add("MenuItemPrice", "MenuItemPrice");
+                    bulkCopy.ColumnMappings.Add("ProductName", "ProductName");
+                    bulkCopy.ColumnMappings.Add("ProductDescription", "ProductDescription");
+                    bulkCopy.ColumnMappings.Add("ProductPrice", "ProductPrice");
                     bulkCopy.WriteToServer(dataTable);
                 }
             }
