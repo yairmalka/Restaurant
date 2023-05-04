@@ -12,9 +12,23 @@ namespace Restaurant
         // getOrderByID
         // getAllOrders
 
-        public void OrderProduct()
-        {
+        ProductLogic productLogic;
 
+        public  OrderLogic(ProductLogic productLogic)
+        {
+            this.productLogic = productLogic;
+        }
+
+        public OrderModel MakeAreservation(List<ProductModel> productsToOrder)
+        {
+            Order newOrder = new Order();
+            foreach(ProductModel product in productsToOrder)
+            {
+                productID = 
+            }
+            // TO DO: if dine in order get suitble free table from tables, if not free table think what to do
+            newOrder.OrderDate = DateTime.Now;
+            return new OrderModel();
         }
 
 

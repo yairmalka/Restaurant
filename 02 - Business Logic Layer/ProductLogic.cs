@@ -53,5 +53,19 @@ namespace Restaurant
                 }
             }
         }
+
+        public int getProductIDbyProductName(string productName) // this function is used by MakeAreservation method in OrderLogic class
+        {
+            Product product =  db.Products.Where(p => p.ProductName.Equals(productName)).SingleOrDefault();
+
+            if(product == null)
+            {
+                throw new NotFoundException($"product name with the name of {productName} is not found");
+            }
+
+            return product.ProductId;
+        }
+
+
     }
 }
