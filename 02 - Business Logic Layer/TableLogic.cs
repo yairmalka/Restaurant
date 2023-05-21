@@ -9,7 +9,7 @@ using System.Windows.Markup;
 
 namespace Restaurant
 {
-    public class TableLogic: BaseLogic
+    public class TableLogic : BaseLogic
     {
 
         public void LoadAllRestaurantTables()
@@ -24,7 +24,7 @@ namespace Restaurant
 
 
                 reader.ReadLine();
-                while(!reader.EndOfStream)
+                while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
                     var values = line.Split(",");
@@ -34,7 +34,7 @@ namespace Restaurant
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    using(var bulkCpy =  new SqlBulkCopy(connectionString)) 
+                    using (var bulkCpy = new SqlBulkCopy(connectionString))
                     {
                         bulkCpy.DestinationTableName = "Tables";
                         bulkCpy.ColumnMappings.Add("TableNumber", "TableNumber");
@@ -45,6 +45,29 @@ namespace Restaurant
                 }
             }
         }
+
+        public int AssignFreeTable(int numOfSeats)
+        {
+            List<Table> availableTables = db.Tables.Where(t => t.TableAvailable == true).OrderBy(t => t.TableNumOfSeats).ToList();
+            Table availableTable = availableTables.FirstOrDefault(t => t.TableNumOfSeats == numOfSeats);
+
+            if (availableTable == null)
+            {
+                availableTable = availableTables.FirstOrDefault(t => t.TableNumOfSeats > numOfSeats);
+
+                if (availableTable == null) // if all tables are taken
+                {
+                    throw new NotFoundException($"No suitable table with {numOfSeats} or more seats found.");
+                }
+            }
+
+            availableTable.TableAvailable = false;
+            db.SaveChanges();
+            return availableTable.TableId;
+
+        }
+
+        //TO DO: freeTable(int id)
 
     }
 }

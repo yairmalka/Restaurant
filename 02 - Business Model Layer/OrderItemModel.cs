@@ -14,7 +14,7 @@ namespace Restaurant
 
         public int ProductID { get; set; }
 
-        public int? Quantity { get; set; }
+        public int? QuantityUserOrderd { get; set; }
 
         public int? Price { get; set; }
 
@@ -26,7 +26,7 @@ namespace Restaurant
             this.OrderItemId = orderItem.OrderItemId;
             this.OrderId = orderItem.OrderId;
             this.ProductID = orderItem.ProductId;
-            this.Quantity = orderItem.Quantity;
+            this.QuantityUserOrderd = orderItem.Quantity;
             this.Price = orderItem.Price;
             this.SpecialRequests = orderItem.SpecialRequests;
         }

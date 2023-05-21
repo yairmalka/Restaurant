@@ -22,6 +22,14 @@ namespace Restaurant
 
         }
 
+        public int GetCustomerIDbyPhoneNumber(string phoneNumber)
+        {
+           Customer customer = db.Customers.Where(c => c.CustomerPhoneNumber.Equals(phoneNumber)).SingleOrDefault();
+            if (customer == null)
+                throw new NotFoundException($"customer with the phone number of {phoneNumber} is not exist");
+            return customer.CustomerId;
+        }
+
         public CustomerModel AddCustomer(CustomerModel customerModel)
         {
             Customer customer = new Customer

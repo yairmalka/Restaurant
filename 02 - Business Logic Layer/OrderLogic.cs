@@ -6,29 +6,57 @@ using System.Threading.Tasks;
 
 namespace Restaurant
 {
-    public class OrderLogic
+    public class OrderLogic: BaseLogic
     {
         // public find all customer orders
         // getOrderByID
         // getAllOrders
 
         ProductLogic productLogic;
+        CustomerLogic customerLogic;
+        TableLogic tableLogic;
 
-        public  OrderLogic(ProductLogic productLogic)
+        public OrderLogic(ProductLogic productLogic, CustomerLogic customerLogic, TableLogic tableLogic)
         {
             this.productLogic = productLogic;
+            this.customerLogic = customerLogic;
+            this.tableLogic = tableLogic;
         }
-
-        public OrderModel MakeAreservation(List<ProductModel> productsToOrder)
+        
+        public OrderModel AddanOrder(OrderInputModel orderInput)
         {
             Order newOrder = new Order();
-            foreach(ProductModel product in productsToOrder)
-            {
-                productID = 
-            }
-            // TO DO: if dine in order get suitble free table from tables, if not free table think what to do
+
+            newOrder.CustomerId = customerLogic.GetCustomerIDbyPhoneNumber(orderInput.Customer.CustomerPhoneNumber);
             newOrder.OrderDate = DateTime.Now;
-            return new OrderModel();
+            if (orderInput.OrderType.Equals("TAKE AWAY") || orderInput.OrderType.Equals("SELF PICKUP"))
+                newOrder.TableId = null;
+            else
+            {
+                newOrder.TableId = tableLogic.AssignFreeTable(orderInput.NumOfSeats);
+                newOrder.OrderType = orderInput.OrderType; // (DINE IN)
+            }
+
+            db.Orders.Add(newOrder);
+            db.SaveChanges();
+
+            for( int i = 0; i< orderInput.ProductsToOrder.Count; i++)
+            {
+                var orderItem = new OrderItem()
+                {
+                    OrderId = newOrder.OrderId,
+                    ProductId = orderInput.ProductsToOrder[i].ProductId,
+                    Quantity = orderInput.ProductsToOrder[i].Quantity,
+                    Price = orderInput.ProductsToOrder[i].ProductPrice,
+                    SpecialRequests = orderInput.SpecialRequests[i]
+                };
+
+                db.OrderItems.Add(orderItem);
+            }
+
+            db.SaveChanges ();
+
+            return new OrderModel(newOrder);
         }
 
 

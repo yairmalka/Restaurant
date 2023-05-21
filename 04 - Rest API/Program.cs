@@ -9,6 +9,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddTransient<CustomerLogic>();
 builder.Services.AddTransient<ProductLogic>();
+builder.Services.AddTransient<TableLogic>();
+builder.Services.AddTransient<OrderLogic>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

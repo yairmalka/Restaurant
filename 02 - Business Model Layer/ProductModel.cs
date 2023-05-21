@@ -18,6 +18,8 @@ namespace Restaurant
 
         public int? ProductPrice { get; set; }
 
+        public int? Quantity { get; set; }
+
         public ProductModel(Product product)
         {
             this.ProductId = product.ProductId;
